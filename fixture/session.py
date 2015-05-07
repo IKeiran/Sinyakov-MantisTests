@@ -2,16 +2,30 @@ class SessionHelper:
     def __init__(self, app):
         self.app = app
 
+    def send_text(self, locator, text):
+        wd = self.app.wd
+        wd.find_element_by_name(locator).click()
+        wd.find_element_by_name(locator).clear()
+        wd.find_element_by_name(locator).send_keys(text)
+
+    def input_login(self, login):
+        wd = self.app.wd
+        self.send_text("username", login)
+
+    def input_password(self, password):
+        wd = self.app.wd
+        self.send_text("password", password)
+
+    def submit_button_click(self):
+        wd = self.app.wd
+        wd.find_element_by_css_selector('input[type="submit"]').click()
+
     def login_as(self, username, password):
         wd = self.app.wd
         self.app.go_to_main_page()
-        wd.find_element_by_name("username").click()
-        wd.find_element_by_name("username").clear()
-        wd.find_element_by_name("username").send_keys(username)
-        wd.find_element_by_name("password").click()
-        wd.find_element_by_name("password").clear()
-        wd.find_element_by_name("password").send_keys(password)
-        wd.find_element_by_css_selector('input[type="submit"]').click()
+        self.input_login(username)
+        self.input_password(password)
+        self.submit_button_click()
 
     def logout(self):
         wd = self.app.wd

@@ -1,3 +1,5 @@
+from selenium.common.exceptions import NoSuchElementException
+
 class SessionHelper:
     def __init__(self, app):
         self.app = app
@@ -9,11 +11,9 @@ class SessionHelper:
         wd.find_element_by_name(locator).send_keys(text)
 
     def input_login(self, login):
-        wd = self.app.wd
         self.send_text("username", login)
 
     def input_password(self, password):
-        wd = self.app.wd
         self.send_text("password", password)
 
     def submit_button_click(self):
@@ -21,11 +21,11 @@ class SessionHelper:
         wd.find_element_by_css_selector('input[type="submit"]').click()
 
     def login_as(self, username, password):
-        wd = self.app.wd
-        self.app.go_to_main_page()
-        self.input_login(username)
-        self.input_password(password)
-        self.submit_button_click()
+        if not self.is_logged_in_as(username):
+            self.app.go_to_main_page()
+            self.input_login(username)
+            self.input_password(password)
+            self.submit_button_click()
 
     def logout(self):
         wd = self.app.wd
@@ -37,7 +37,10 @@ class SessionHelper:
 
     def get_logged_user(self):
         wd = self.app.wd
-        return wd.find_element_by_css_selector("td.login-info-left span").text
+        try:
+            return wd.find_element_by_css_selector("td.login-info-left span").text
+        except NoSuchElementException:
+            return None
 
     def is_logged_in_as(self, username):
         return self.get_logged_user() == username

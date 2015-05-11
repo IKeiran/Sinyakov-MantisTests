@@ -113,6 +113,3 @@ class ProjectHelper:
         self.open_project_edit_page(id=id)
         self.delete_button_click()
         self.delete_button_click()
-
-
-
